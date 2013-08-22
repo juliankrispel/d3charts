@@ -1,0 +1,9 @@
+{
+    "name": "worldmap",
+    "dependencies": {
+        "datamaps": "https://github.com/markmarkoh/datamaps.git",
+        "d3": "*",
+        "topojson": "*",
+        "underscore": "*"
+    }
+}
