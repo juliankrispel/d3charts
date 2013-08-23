@@ -21,7 +21,6 @@ projection = d3.geo.mercator()
     .scale(170)
 
 d3.json "json/world.topo.json", (error, world) ->
-    console.log world
     subunits = topojson.feature world, world.objects.countries
 
 

@@ -17,7 +17,6 @@
 
   d3.json("json/world.topo.json", function(error, world) {
     var path, subunits;
-    console.log(world);
     subunits = topojson.feature(world, world.objects.countries);
     path = d3.geo.path().projection(projection);
     group.append('path').datum(subunits).attr('d', path);
