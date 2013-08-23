@@ -1,32 +1,39 @@
-# Config
-width = 700
-height = 400
-
-# Scale 
-
 # Select container, insert SVG, define width and height
 # and append g element 
-svg = d3.select("#map")
+svg = d3.select("#mapchart")
     .append("svg")
-    .attr("width", width)
+    .attr('width', '100%')
+    .attr('height', '100%')
+    .style('min-width', '400px')
+    .attr('viewBox', '0 0 1000 600')
+    .attr('preserveAspectRatio', 'xMidYMid')
     .attr('fill', '#353a41')
-    .attr("height", height)
+
+group = svg.append('g')
+
+containerWidth = ->
+    svg[0][0].offsetWidth
+
+width = svg[0][0].offsetWidth
+height = svg[0][0].offsetHeight
+
+projection = d3.geo.mercator()
+    .scale(170)
 
 d3.json "json/world.topo.json", (error, world) ->
+    console.log world
     subunits = topojson.feature world, world.objects.countries
 
-    projection = d3.geo.mercator()
-        .scale(120)
-        .translate [width / 2, height / 2]
+
 
     path = d3.geo.path().projection projection
 
-    svg.append('path')
+    group.append('path')
         .datum( subunits )
         .attr( 'd', path )
 
     d3.json "json/exchanges.normal.json", (error, exchanges) ->
-        svg.selectAll('circle')
+        group.selectAll('circle')
             .data(exchanges.exchanges)
             .enter()
             .append('circle')
@@ -45,7 +52,7 @@ d3.json "json/world.topo.json", (error, world) ->
                 colorScale(d[3])
             )
 
-        svg.selectAll('.market-label')
+        group.selectAll('.market-label')
             .data(exchanges.exchanges)
             .enter()
             .append('text')

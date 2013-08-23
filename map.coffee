@@ -63,7 +63,6 @@ d3.json "json/world.topo.json", (error, world) ->
             .data(exchanges.exchanges)
             .enter()
             .append('text')
-            .attr('class')
 
     null
 

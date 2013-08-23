@@ -1,6 +1,6 @@
 #Config
 
-div = d3.select("#barchart");
+div = d3.select("#horizontalbarchart");
 
 d3.json "json/exchanges.normal.json", (error, data) ->
     barWidth = 100 / data.exchanges.length
