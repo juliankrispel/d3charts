@@ -1,19 +1,32 @@
 (function() {
-  var containerWidth, group, height, projection, svg, width;
+  var containerSize, height, projection, resize, svg, width;
 
-  svg = d3.select("#mapchart").append("svg").attr('width', '100%').attr('height', '100%').style('min-width', '400px').attr('viewBox', '0 0 1000 600').attr('preserveAspectRatio', 'xMidYMid').attr('fill', '#353a41');
+  svg = d3.select("#mapchart").append("svg").attr('width', '100%').attr('height', '100%').style('min-width', '400px').attr('viewBox', '0 0 1000 400').attr('preserveAspectRatio', 'xMidYMid').attr('fill', '#353a41');
 
-  group = svg.append('g');
+  window.group = svg.append('g');
 
-  containerWidth = function() {
-    return svg[0][0].offsetWidth;
+  containerSize = function() {
+    return [svg[0][0].offsetWidth, svg[0][0].offsetHeight];
+  };
+
+  resize = function() {
+    var aspect, bbox, width;
+    bbox = group[0][0].getBBox();
+    aspect = bbox.width / bbox.height;
+    width = containerSize()[0];
+    console.log(width / aspect);
+    return svg.attr('height', width / aspect);
+  };
+
+  window.onresize = function() {
+    return resize();
   };
 
   width = svg[0][0].offsetWidth;
 
   height = svg[0][0].offsetHeight;
 
-  projection = d3.geo.mercator().scale(170);
+  projection = d3.geo.mercator().scale(100);
 
   d3.json("json/world.topo.json", function(error, world) {
     var path, subunits;

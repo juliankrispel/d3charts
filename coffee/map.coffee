@@ -5,25 +5,35 @@ svg = d3.select("#mapchart")
     .attr('width', '100%')
     .attr('height', '100%')
     .style('min-width', '400px')
-    .attr('viewBox', '0 0 1000 600')
+    .attr('viewBox', '0 0 1000 400')
     .attr('preserveAspectRatio', 'xMidYMid')
     .attr('fill', '#353a41')
 
-group = svg.append('g')
+window.group = svg.append('g')
 
-containerWidth = ->
-    svg[0][0].offsetWidth
+containerSize = ->
+    [
+        svg[0][0].offsetWidth,
+        svg[0][0].offsetHeight
+    ]
+
+resize = ->
+    bbox = group[0][0].getBBox()
+    aspect =  bbox.width / bbox.height
+    width = containerSize()[0]
+    console.log width / aspect
+    svg.attr('height', width / aspect)
+
+window.onresize = () -> resize()
 
 width = svg[0][0].offsetWidth
 height = svg[0][0].offsetHeight
 
 projection = d3.geo.mercator()
-    .scale(170)
+    .scale(100)
 
 d3.json "json/world.topo.json", (error, world) ->
     subunits = topojson.feature world, world.objects.countries
-
-
 
     path = d3.geo.path().projection projection
 
