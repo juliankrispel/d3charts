@@ -33,6 +33,7 @@ svg = d3.select("#mapchart")
     .attr('preserveAspectRatio', 'xMidYMin')
     .attr('fill', '#353a41')
 
+
 window.group = svg.append('g')
 
 containerSize = ->
@@ -43,7 +44,6 @@ containerSize = ->
 
 resize = ->
     bbox = group[0][0].getBBox()
-    console.log bbox
     aspect =  bbox.width / bbox.height
     width = containerSize()[0]
     svg.attr('height', width / aspect)
@@ -67,55 +67,73 @@ d3.json "json/world.topo.json", (error, world) ->
         .attr( 'd', path )
 
     d3.json "json/exchanges.normal.json", (error, exchanges) ->
-        group.selectAll('circle')
-            .data(exchanges.exchanges)
-            .enter()
-            .append('circle')
-            .attr('name', (d) -> d[0])
-            .attr('cx', (d) -> 
-                p = projection([d[2], d[1]])
-                p[0]
-            )
-            .attr('cy', (d) -> 
-                p = projection([d[2], d[1]])
-                p[1]
-            )
-            .attr('r', (d) -> bubbleScale(d[3]))
-            .style('opacity', .5)
-            .style('fill', (d) -> 
-                colorScale(d[3])
+        labels = []
+        size = containerSize()
+
+        _(exchanges.exchanges).each((exchange) ->
+            p = projection([exchange[2], exchange[1]])
+            labels.push
+                lat: p[0]
+                long: p[1]
+                name: exchange[0]
+                value: exchange[3]
+        )
+
+        force = d3.layout.force()
+            .nodes(labels)
+            .links([])
+            .gravity(0)
+            .size([1000, 700])
+            .start()
+
+        force.on("tick", (e) ->
+            #Push nodes toward their designated focus.
+            k = .1 * e.alpha;
+            _(labels).each((label)->
+                label.x += (label.lat - label.x) * k
+                label.y += (label.long - label.y) * k
+                #console.log(label)
             )
 
-        group.selectAll('.market-label')
-            .data(exchanges.exchanges)
+            group.selectAll('circle')
+                .attr('cx', (d) -> d.x)
+                .attr('cy', (d) -> d.y)
+
+            group.selectAll('text')
+                .attr('x', (d) -> d.x + bubbleScale(d.value) + 4)
+                .attr('y', (d) -> d.y)
+
+        )
+
+        group.selectAll('.label')
+            .data(labels)
             .enter()
+            .append('g')
+            .attr('class', 'label')
+
+        group.selectAll('.label')
+            .append('circle')
+            .attr('class', 'force-node')
+            .attr('name', (d) -> d.name)
+            .attr('r', (d) -> 
+                bubbleScale(d.value))
+            .attr('cx', (d) -> d.x)
+            .attr('cy', (d) -> d.y)
+            .style('opacity', .5)
+            .style('fill', (d) -> colorScale(d.value))
+
+        group.selectAll('.label')
             .append('text')
-            .attr('class', 'market-label')
+            .attr('class', 'market-label force-node')
             .attr('dy', '.35em')
-            .attr('x', (d) -> 
-                p = projection([d[2], d[1]])
-                bubbleScale(d[3]) + 5 + p[0]
-            )
-            .attr('y', (d) ->
-                p = projection([d[2], d[1]])
-                fontSizeScale(d[3]) / 2 + p[1]
-            )
-            .style('font-size', (d) -> fontSizeScale(d[3]) + 'px')
-            .style('fill', (d) -> colorScale(d[3]))
-            .text((d) -> 
-                d[3] + '%'
-            )
+            .style('font-size', (d) -> fontSizeScale(d.value) + 'px')
+            .style('fill', (d) -> colorScale(d.value))
+            .text((d) ->  d.value + '%' )
+            .attr('cx', (d) -> d.x)
+            .attr('cy', (d) -> d.y)
             .append('tspan')
-            .attr('y', (d) ->
-                p = projection([d[2], d[1]])
-                p[1] - fontSizeScale(d[3]) / 2 + 5
-            )
-            .attr('x', (d) -> 
-                p = projection([d[2], d[1]])
-                bubbleScale(d[3]) + 5 + p[0]
-            )
-            .style('font-size', (d) -> fontSizeScale(d[3]) - 1 + 'px')
-            .text (d) -> d[0]
+            .style('font-size', (d) -> fontSizeScale(d.value) - 1 + 'px')
+            .text (d) -> d.name
 
 
         boundingElements = []
@@ -130,6 +148,9 @@ d3.json "json/world.topo.json", (error, world) ->
 
         # using the path determine the bounds of the current map and use 
         # these to determine better values for the scale and translation
+
+        return null
+
         b = getBoundingBox(boundingElements)
         boundsWidth = b[1][0] - b[0][0]
         boundsHeight = b[1][1] - b[0][1]
@@ -141,11 +162,6 @@ d3.json "json/world.topo.json", (error, world) ->
         #            .attr('width', boundsWidth)
         #            .attr('height', boundsHeight)
 
-        hscale  = scale*width  / (b[1][0] - b[0][0])
-        vscale  = scale*height / (b[1][1] - b[0][1])
-        scale   = (hscale < vscale) ? hscale : vscale
-        offset  = [width - (b[0][0] + b[1][0])/2, height - (b[0][1] + b[1][1])/2]
-
         dimensions = group[0][0].getBBox()
 
         s = .95 / Math.max((b[1][0] - b[0][0]) / dimensions.width + 20, (b[1][1] - b[0][1]) / dimensions.height)
@@ -153,6 +169,7 @@ d3.json "json/world.topo.json", (error, world) ->
 
         group.transition().duration(750).attr("transform",
             "translate(" + projection.translate() + ")" + "scale(" + .95 / Math.max((b[1][0] - b[0][0]) / dimensions.width, (b[1][1] - b[0][1]) / dimensions.height) + ")" + "translate(" + -(b[1][0] + b[0][0]) / 2 + "," + -(b[1][1] + b[0][1]) / 2 + ")")
+
 
 
 

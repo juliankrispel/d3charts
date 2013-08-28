@@ -41,7 +41,6 @@
   resize = function() {
     var aspect, bbox, width;
     bbox = group[0][0].getBBox();
-    console.log(bbox);
     aspect = bbox.width / bbox.height;
     width = containerSize()[0];
     return svg.attr('height', width / aspect);
@@ -59,48 +58,64 @@
     window.path = d3.geo.path().projection(projection);
     group.append('path').datum(subunits).attr('d', path);
     d3.json("json/exchanges.normal.json", function(error, exchanges) {
-      var b, boundingElements, boundsHeight, boundsWidth, dimensions, hscale, offset, s, scale, t, vscale, _ref;
-      group.selectAll('circle').data(exchanges.exchanges).enter().append('circle').attr('name', function(d) {
-        return d[0];
-      }).attr('cx', function(d) {
+      var b, boundingElements, boundsHeight, boundsWidth, dimensions, force, labels, s, size, t;
+      labels = [];
+      size = containerSize();
+      _(exchanges.exchanges).each(function(exchange) {
         var p;
-        p = projection([d[2], d[1]]);
-        return p[0];
-      }).attr('cy', function(d) {
-        var p;
-        p = projection([d[2], d[1]]);
-        return p[1];
-      }).attr('r', function(d) {
-        return bubbleScale(d[3]);
-      }).style('opacity', .5).style('fill', function(d) {
-        return colorScale(d[3]);
+        p = projection([exchange[2], exchange[1]]);
+        return labels.push({
+          lat: p[0],
+          long: p[1],
+          name: exchange[0],
+          value: exchange[3]
+        });
       });
-      group.selectAll('.market-label').data(exchanges.exchanges).enter().append('text').attr('class', 'market-label').attr('dy', '.35em').attr('x', function(d) {
-        var p;
-        p = projection([d[2], d[1]]);
-        return bubbleScale(d[3]) + 5 + p[0];
-      }).attr('y', function(d) {
-        var p;
-        p = projection([d[2], d[1]]);
-        return fontSizeScale(d[3]) / 2 + p[1];
-      }).style('font-size', function(d) {
-        return fontSizeScale(d[3]) + 'px';
+      force = d3.layout.force().nodes(labels).links([]).gravity(0).size([1000, 700]).start();
+      force.on("tick", function(e) {
+        var k;
+        k = .1 * e.alpha;
+        _(labels).each(function(label) {
+          label.x += (label.lat - label.x) * k;
+          return label.y += (label.long - label.y) * k;
+        });
+        group.selectAll('circle').attr('cx', function(d) {
+          return d.x;
+        }).attr('cy', function(d) {
+          return d.y;
+        });
+        return group.selectAll('text').attr('x', function(d) {
+          return d.x + bubbleScale(d.value) + 4;
+        }).attr('y', function(d) {
+          return d.y;
+        });
+      });
+      group.selectAll('.label').data(labels).enter().append('g').attr('class', 'label');
+      group.selectAll('.label').append('circle').attr('class', 'force-node').attr('name', function(d) {
+        return d.name;
+      }).attr('r', function(d) {
+        return bubbleScale(d.value);
+      }).attr('cx', function(d) {
+        return d.x;
+      }).attr('cy', function(d) {
+        return d.y;
+      }).style('opacity', .5).style('fill', function(d) {
+        return colorScale(d.value);
+      });
+      group.selectAll('.label').append('text').attr('class', 'market-label force-node').attr('dy', '.35em').style('font-size', function(d) {
+        return fontSizeScale(d.value) + 'px';
       }).style('fill', function(d) {
-        return colorScale(d[3]);
+        return colorScale(d.value);
       }).text(function(d) {
-        return d[3] + '%';
-      }).append('tspan').attr('y', function(d) {
-        var p;
-        p = projection([d[2], d[1]]);
-        return p[1] - fontSizeScale(d[3]) / 2 + 5;
-      }).attr('x', function(d) {
-        var p;
-        p = projection([d[2], d[1]]);
-        return bubbleScale(d[3]) + 5 + p[0];
-      }).style('font-size', function(d) {
-        return fontSizeScale(d[3]) - 1 + 'px';
+        return d.value + '%';
+      }).attr('cx', function(d) {
+        return d.x;
+      }).attr('cy', function(d) {
+        return d.y;
+      }).append('tspan').style('font-size', function(d) {
+        return fontSizeScale(d.value) - 1 + 'px';
       }).text(function(d) {
-        return d[0];
+        return d.name;
       });
       boundingElements = [];
       _(group.selectAll('circle')[0]).each(function(d) {
@@ -109,15 +124,10 @@
       _(group.selectAll('text')[0]).each(function(d) {
         return boundingElements.push(d);
       });
+      return null;
       b = getBoundingBox(boundingElements);
       boundsWidth = b[1][0] - b[0][0];
       boundsHeight = b[1][1] - b[0][1];
-      hscale = scale * width / (b[1][0] - b[0][0]);
-      vscale = scale * height / (b[1][1] - b[0][1]);
-      scale = (_ref = hscale < vscale) != null ? _ref : {
-        hscale: vscale
-      };
-      offset = [width - (b[0][0] + b[1][0]) / 2, height - (b[0][1] + b[1][1]) / 2];
       dimensions = group[0][0].getBBox();
       s = .95 / Math.max((b[1][0] - b[0][0]) / dimensions.width + 20, (b[1][1] - b[0][1]) / dimensions.height);
       t = [(dimensions.width - s * (b[1][0] + b[0][0])) / 2, (dimensions.height - s * (b[1][1] + b[0][1])) / 2];
