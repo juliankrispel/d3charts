@@ -1,132 +1,229 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <script src="http://d3js.org/d3.v2.js"></script>
-    <script type="text/javascript" src="https://raw.github.com/ZJONSSON/d3-plugins/master/force_labels/force_labels.js"></script>
-    <style>
-    .anchor { fill:blue}
-    .labelbox { fill:black;opacity:0.8}
-    .labeltext { fill:white;font-weight:bold;text-anchor:middle;font-size:16;font-family:  serif}
-    .link { stroke:gray;stroke-width:0.35}
-    </style>
-</head>
-		
+<meta charset="utf-8">
+<style>
+
+    html,body, #chart{
+        height: 100%;
+        width: 100%;
+    }
+
+svg {
+  font: 10px sans-serif;
+}
+
+path {
+  fill: steelblue;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.brush .extent {
+  stroke: #fff;
+  fill-opacity: .125;
+  shape-rendering: crispEdges;
+}
+
+</style>
 <body>
-    <div style="width:150px;float:left">
-        <span id="corr-label">Correlation: </span><br>
-        <input type="range" min="-1.0" max="1.0" value="0.0" id="corr" step="0.01"/>
-    </div>
-    <div style="width:150px;float:left">
-        <span id="charge-label">Label charge: </span><br>
-        <input type="range" min="0" max="100" value="60.0" id="charge" step="1"/>
-    </div>
-    <button type="button" id="addone">Add one measurement</button>
-    <button type="button" id="randomize20">Replace with 20</button>
-    <button type="button" id="randomize50">Replace with 50</button>
-    <button type="button" id="randomize100">Replace with 100</button>
- 
-<script type="text/javascript">
-var w=960,h=500,
-    x_mean = w/2,
-    x_std = w/10,
-    y_mean = h/2,
-    y_std = h/10,
-    labelBox,link,
-    data=[];
- 
- 
-var svg=d3.select("body")
-    .append("svg:svg")
-    .attr("height",h)
-    .attr("width",w)
-    
-function refresh() {
-    // plot the data as usual
-    anchors = svg.selectAll(".anchor").data(data,function(d,i) { return i})
-    anchors.exit().attr("class","exit").transition().duration(1000).style("opacity",0).remove()
-    anchors.enter().append("circle").attr("class","anchor").attr("r",4).attr("cx",function(d) { return d.x}).attr("cy",function(d) { return h-d.y})
-    anchors.transition()
-        .delay(function(d,i) { return i*10})
-        .duration(1500)
-        .attr("cx",function(d) { return d.x})
-        .attr("cy",function(d) { return h-d.y})
-    
-        
-    // Now for the labels
-    anchors.call(labelForce.update)  //  This is the only function call needed, the rest is just drawing the labels
-       
-    labels = svg.selectAll(".labels").data(data,function(d,i) { return i})
-    labels.exit().attr("class","exit").transition().delay(0).duration(500).style("opacity",0).remove()
-    
-    // Draw the labelbox, caption and the link
-        newLabels = labels.enter().append("g").attr("class","labels")
- 
-        newLabelBox = newLabels.append("g").attr("class","labelbox")
-                newLabelBox.append("circle").attr("r",11)
-                newLabelBox.append("text").attr("class","labeltext").attr("y",6)
-        newLabels.append("line").attr("class","link")
-        
-        labelBox = svg.selectAll(".labels").selectAll(".labelbox")
-        links = svg.selectAll(".link")
-        labelBox.selectAll("text").text(function(d) { return d.num})
- 
+    <div id="chart"></div>
+<script src="bower_components/underscore/underscore-min.js"></script>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+var margin,
+    margin2,
+    width,
+    height,
+    height2,
+    x = d3.time.scale(),
+    x2 = d3.time.scale(),
+    y = d3.scale.linear(),
+    y2 = d3.scale.linear(),
+    parseDate = d3.time.format("%b %Y").parse,
+    xAxis = d3.svg.axis().orient("bottom"),
+    xAxis2 = d3.svg.axis().orient("bottom"),
+    yAxis = d3.svg.axis().orient("left"),
+    brush = d3.svg.brush(),
+    area = d3.svg.area().interpolate("monotone"),
+    area2 = d3.svg.area().interpolate("monotone"),
+    graphData;
+
+var container = d3.select("#chart");
+var containerSize = function(){
+    return [
+        container[0][0].offsetWidth,
+        container[0][0].offsetHeight
+    ]
+
 }
- 
-function redrawLabels() {
-    labelBox
-        .attr("transform",function(d) { return "translate("+d.labelPos.x+" "+d.labelPos.y+")"})
- 
-    links
-        .attr("x1",function(d) { return d.anchorPos.x})
-        .attr("y1",function(d) { return d.anchorPos.y})
-        .attr("x2",function(d) { return d.labelPos.x})
-        .attr("y2",function(d) { return d.labelPos.y})
-}        
-        
- 
-// Initialize the label-forces
-labelForce = d3.force_labels()
-    .linkDistance(0.0)
-    .gravity(0)
-    .nodes([]).links([])
-    .charge(-60)
-    .on("tick",redrawLabels)
- 
- 
- 
-// and now for the data functionality
-function randomize(count) {
-    z1=d3.random.normal()
-    z2=d3.random.normal()
-    data=data.concat(d3.range(count || 100).map(function(d,i) { return {z1:z1(),z2:z2(),num:data.length+i}}))
-    correlate()
+
+var svg = container.append("svg")
+    .attr("width", containerSize()[0])
+    .attr("height", containerSize()[1]);
+
+svg.append("defs").append("clipPath")
+    .attr("id", "clip")
+  .append("rect")
+    .attr("width", containerSize()[0])
+    .attr("height", containerSize()[1]);
+
+var focus = svg.append("g");
+
+var context = svg.append("g");
+
+d3.json("data.json", function(error, data){
+    graphData = data;
+    if(error) throw(error);
+    resizeGraph();
+    drawGraph(data);
+    window.onresize = function(){
+        resizeGraph();
+    }
+});
+function resizeGraph(){
+    var h = containerSize()[1];
+    margin = {top: 10, right: 10, bottom: 20, left: 40},
+    margin2 = {top: h *.8, right: 10, bottom: 20, left: 40},
+    width = containerSize()[0] - margin.left - margin.right,
+    height = h * .8 - margin.bottom - margin.top,
+    height2 = h * .2 - margin2.bottom;
+
+    console.log(height2);
+
+    x.range([0, width]),
+    x2.range([0, width]),
+    y.range([height, 0]),
+    y2.range([height2, 0]),
+
+    xAxis.scale(x),
+    xAxis2.scale(x2),
+    yAxis.scale(y);
+
+
+    svg.attr("width", containerSize()[0])
+        .attr("height", containerSize()[1]);
+
+    svg.select('#clip').select('rect')
+        .attr("width", containerSize()[0])
+        .attr("height", containerSize()[1]);
+
+    brush.x(x2)
+        .on("brush", brushed);
+
+    area.x(function(d) { return x(d.date); })
+        .y0(height)
+        .y1(function(d) { return y(d.value); });
+
+    area2.x(function(d) { return x2(d.date); })
+        .y0(height2)
+        .y1(function(d) { return y2(d.value); });
+
+    focus.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    context.attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
+
+    refreshGraph();
 }
- 
-function correlate() {
-    var corr = d3.select("#corr").property("value")
-    d3.select("#corr-label").text("Correlation: "+d3.format("%")(corr))
-    
-    data.forEach(function(d) { d.x = x_mean+(d.z1*x_std),
-                                d.y = y_mean+y_std*(corr*d.z1+d.z2*Math.sqrt(1-Math.pow(corr,2)))})
-    refresh()
+
+function drawGraph(data){
+    _(data).each(function(a){
+        _(a.data).each(function(d){
+            d.date = parseDate(d.month + ' ' + d.year);
+            d.value = +d.value;
+        });
+    });
+
+    var buffer = _(data).chain()
+        .pluck('data')
+        .flatten()
+        .value();
+
+    var colorScale = d3.scale.linear()
+        .domain([0, _(buffer).max(function(d){ return d.value; }).value])
+        .range(['#0067e8', '#03f0d7']);
+
+  x.domain(d3.extent(_(buffer).map(function(d) { return d.date; })));
+  y.domain([0, _(buffer).max(function(d){ return d.value; }).value]);
+  x2.domain(x.domain());
+  y2.domain(y.domain());
+
+  _(data).each(function(graph){
+    var maxValue = _(graph.data).max(function(d){ return d.value; }).value;
+    var color = colorScale(maxValue);
+    drawFocusAndContext(graph.data, color);
+  });
+
+  focus.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+  focus.append("g")
+      .attr("class", "y axis")
+      .call(yAxis);
+
+  context.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height2 + ")")
+      .call(xAxis2);
+
+  context.append("g")
+      .attr("class", "x brush")
+      .call(brush)
+    .selectAll("rect")
+      .attr("y", -6)
+      .attr("height", height2 + 7);
+  }
+
+  function refreshGraph(){
+      focus.select('.x.axis')
+          .attr('transform', 'translate(0,' + height + ')')
+          .call(xAxis);
+        focus.select('.y.axis')
+            .call(yAxis);
+      context.select('.x.axis')
+      .attr('transform', 'translate(0,' + height + ')')
+      .call(xAxis2);
+
+    context.selectAll('.graph')
+        .attr('d', area2);
+
+    focus.selectAll('.graph')
+        .attr('d', area);
+
+        context.select('.brush')
+            .call(brush)
+            .selectAll('rect')
+            .attr('height', height2);
+
+  }
+
+function drawFocusAndContext(data, color){
+  focus.append("path")
+    .datum(data)
+    .attr('class', 'graph')
+      .attr("clip-path", "url(#clip)")
+      .style('fill', color)
+      .style('opacity', .8)
+      .attr("d", area);
+
+  context.append("path")
+      .datum(data)
+    .attr('class', 'graph')
+      .style('fill', color)
+      .attr("d", function(d){
+          return area2(d);
+      });
 }
- 
-// and finally hook up the controls
- 
-d3.select("#randomize20").on("click",function() { data=[];randomize(20)})
-d3.select("#randomize50").on("click",function() { data=[];randomize(50)})
-d3.select("#randomize100").on("click",function() { data=[];randomize(100)})
-d3.select("#addone").on("click",function() { randomize(1)})
-d3.select("#corr")
-    .on("change",function() { d3.select("#corr-label").text("Correlation: "+d3.format("%")(this.value))})
-    .on("mouseup",correlate)
-d3.select("#charge")
-    .on("change",function() { 
-        d3.select("#charge-label").text("Label charge: "+d3.format("f")(this.value))
-        labelForce.charge(-this.value).start()
-    })
- 
-randomize()        
+
+function brushed() {
+  x.domain(brush.empty() ? x2.domain() : brush.extent());
+  focus.selectAll(".graph").attr("d", area);
+  focus.select(".x.axis").call(xAxis);
+}
+
 </script>
-</body>
-</html>

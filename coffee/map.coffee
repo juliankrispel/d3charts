@@ -7,6 +7,7 @@ getBoundingBox = (elements) ->
 
     _(elements).each((element) -> 
         bbox = element.getBBox()
+        console.log bbox
         xleft = bbox.x - bbox.width/2
         xright = bbox.x + bbox.width
         ytop = bbox.y
@@ -75,6 +76,8 @@ d3.json "json/world.topo.json", (error, world) ->
             labels.push
                 lat: p[0]
                 long: p[1]
+                x: p[0]
+                y: p[1]
                 name: exchange[0]
                 value: exchange[3]
         )
@@ -88,7 +91,7 @@ d3.json "json/world.topo.json", (error, world) ->
 
         force.on("tick", (e) ->
             #Push nodes toward their designated focus.
-            k = .1 * e.alpha;
+            k = .003 * e.alpha;
             _(labels).each((label)->
                 label.x += (label.lat - label.x) * k
                 label.y += (label.long - label.y) * k
@@ -129,8 +132,8 @@ d3.json "json/world.topo.json", (error, world) ->
             .style('font-size', (d) -> fontSizeScale(d.value) + 'px')
             .style('fill', (d) -> colorScale(d.value))
             .text((d) ->  d.value + '%' )
-            .attr('cx', (d) -> d.x)
-            .attr('cy', (d) -> d.y)
+            .attr('x', (d) -> d.x)
+            .attr('y', (d) -> d.y)
             .append('tspan')
             .style('font-size', (d) -> fontSizeScale(d.value) - 1 + 'px')
             .text (d) -> d.name
@@ -149,7 +152,6 @@ d3.json "json/world.topo.json", (error, world) ->
         # using the path determine the bounds of the current map and use 
         # these to determine better values for the scale and translation
 
-        return null
 
         b = getBoundingBox(boundingElements)
         boundsWidth = b[1][0] - b[0][0]
@@ -168,7 +170,7 @@ d3.json "json/world.topo.json", (error, world) ->
         t = [(dimensions.width - s * (b[1][0] + b[0][0])) / 2, (dimensions.height - s * (b[1][1] + b[0][1])) / 2]
 
         group.transition().duration(750).attr("transform",
-            "translate(" + projection.translate() + ")" + "scale(" + .95 / Math.max((b[1][0] - b[0][0]) / dimensions.width, (b[1][1] - b[0][1]) / dimensions.height) + ")" + "translate(" + -(b[1][0] + b[0][0]) / 2 + "," + -(b[1][1] + b[0][1]) / 2 + ")")
+            "translate(" + projection.translate() + ")" + "scale(" + .9 / Math.max((b[1][0] - b[0][0]) / dimensions.width, (b[1][1] - b[0][1]) / dimensions.height) + ")" + "translate(" + -(b[1][0] + b[0][0]) / 2 + "," + -(b[1][1] + b[0][1]) / 2 + ")")
 
 
 

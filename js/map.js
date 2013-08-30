@@ -10,6 +10,7 @@
     _(elements).each(function(element) {
       var bbox, xleft, xright, ybottom, ytop;
       bbox = element.getBBox();
+      console.log(bbox);
       xleft = bbox.x - bbox.width / 2;
       xright = bbox.x + bbox.width;
       ytop = bbox.y;
@@ -67,6 +68,8 @@
         return labels.push({
           lat: p[0],
           long: p[1],
+          x: p[0],
+          y: p[1],
           name: exchange[0],
           value: exchange[3]
         });
@@ -74,7 +77,7 @@
       force = d3.layout.force().nodes(labels).links([]).gravity(0).size([1000, 700]).start();
       force.on("tick", function(e) {
         var k;
-        k = .1 * e.alpha;
+        k = .003 * e.alpha;
         _(labels).each(function(label) {
           label.x += (label.lat - label.x) * k;
           return label.y += (label.long - label.y) * k;
@@ -108,9 +111,9 @@
         return colorScale(d.value);
       }).text(function(d) {
         return d.value + '%';
-      }).attr('cx', function(d) {
+      }).attr('x', function(d) {
         return d.x;
-      }).attr('cy', function(d) {
+      }).attr('y', function(d) {
         return d.y;
       }).append('tspan').style('font-size', function(d) {
         return fontSizeScale(d.value) - 1 + 'px';
@@ -124,14 +127,13 @@
       _(group.selectAll('text')[0]).each(function(d) {
         return boundingElements.push(d);
       });
-      return null;
       b = getBoundingBox(boundingElements);
       boundsWidth = b[1][0] - b[0][0];
       boundsHeight = b[1][1] - b[0][1];
       dimensions = group[0][0].getBBox();
       s = .95 / Math.max((b[1][0] - b[0][0]) / dimensions.width + 20, (b[1][1] - b[0][1]) / dimensions.height);
       t = [(dimensions.width - s * (b[1][0] + b[0][0])) / 2, (dimensions.height - s * (b[1][1] + b[0][1])) / 2];
-      return group.transition().duration(750).attr("transform", "translate(" + projection.translate() + ")" + "scale(" + .95 / Math.max((b[1][0] - b[0][0]) / dimensions.width, (b[1][1] - b[0][1]) / dimensions.height) + ")" + "translate(" + -(b[1][0] + b[0][0]) / 2 + "," + -(b[1][1] + b[0][1]) / 2 + ")");
+      return group.transition().duration(750).attr("transform", "translate(" + projection.translate() + ")" + "scale(" + .9 / Math.max((b[1][0] - b[0][0]) / dimensions.width, (b[1][1] - b[0][1]) / dimensions.height) + ")" + "translate(" + -(b[1][0] + b[0][0]) / 2 + "," + -(b[1][1] + b[0][1]) / 2 + ")");
     });
     return null;
   });

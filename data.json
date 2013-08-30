@@ -1,0 +1,312 @@
+[
+    {
+        "name": "Graph 1",
+        "data": [
+            {
+                "month": "Jan",
+                "year": 2000,
+                "value": 1159
+            },
+            {
+                "month": "Feb",
+                "year": 2000,
+                "value": 1865
+            },
+            {
+                "month": "Mar",
+                "year": 2000,
+                "value": 1110
+            },
+            {
+                "month": "Apr",
+                "year": 2000,
+                "value": 1389
+            },
+            {
+                "month": "May",
+                "year": 2000,
+                "value": 1760
+            },
+            {
+                "month": "Jun",
+                "year": 2000,
+                "value": 1604
+            },
+            {
+                "month": "Jul",
+                "year": 2000,
+                "value": 1139
+            },
+            {
+                "month": "Aug",
+                "year": 2000,
+                "value": 1254
+            },
+            {
+                "month": "Sep",
+                "year": 2000,
+                "value": 1211
+            },
+            {
+                "month": "Oct",
+                "year": 2000,
+                "value": 1132
+            },
+            {
+                "month": "Nov",
+                "year": 2000,
+                "value": 1113
+            },
+            {
+                "month": "Dec",
+                "year": 2000,
+                "value": 1725
+            },
+            {
+                "month": "Jan",
+                "year": 2001,
+                "value": 1989
+            },
+            {
+                "month": "Feb",
+                "year": 2001,
+                "value": 1514
+            },
+            {
+                "month": "Mar",
+                "year": 2001,
+                "value": 1633
+            },
+            {
+                "month": "Apr",
+                "year": 2001,
+                "value": 1748
+            },
+            {
+                "month": "May",
+                "year": 2001,
+                "value": 1657
+            },
+            {
+                "month": "Jun",
+                "year": 2001,
+                "value": 1595
+            },
+            {
+                "month": "Jul",
+                "year": 2001,
+                "value": 1626
+            },
+            {
+                "month": "Aug",
+                "year": 2001,
+                "value": 1444
+            },
+            {
+                "month": "Sep",
+                "year": 2001,
+                "value": 1328
+            },
+            {
+                "month": "Oct",
+                "year": 2001,
+                "value": 1230
+            },
+            {
+                "month": "Nov",
+                "year": 2001,
+                "value": 1383
+            },
+            {
+                "month": "Dec",
+                "year": 2001,
+                "value": 1019
+            },
+            {
+                "month": "Jan",
+                "year": 2002,
+                "value": 1237
+            },
+            {
+                "month": "Feb",
+                "year": 2002,
+                "value": 1580
+            },
+            {
+                "month": "Mar",
+                "year": 2002,
+                "value": 1226
+            },
+            {
+                "month": "Apr",
+                "year": 2002,
+                "value": 1607
+            },
+            {
+                "month": "May",
+                "year": 2002,
+                "value": 1986
+            },
+            {
+                "month": "Jun",
+                "year": 2002,
+                "value": 1395
+            }
+        ]
+    },
+    {
+        "name": "Graph 1",
+        "data": [
+            {
+                "month": "Jan",
+                "year": 2000,
+                "value": 716
+            },
+            {
+                "month": "Feb",
+                "year": 2000,
+                "value": 1144
+            },
+            {
+                "month": "Mar",
+                "year": 2000,
+                "value": 791
+            },
+            {
+                "month": "Apr",
+                "year": 2000,
+                "value": 1044
+            },
+            {
+                "month": "May",
+                "year": 2000,
+                "value": 590
+            },
+            {
+                "month": "Jun",
+                "year": 2000,
+                "value": 1187
+            },
+            {
+                "month": "Jul",
+                "year": 2000,
+                "value": 532
+            },
+            {
+                "month": "Aug",
+                "year": 2000,
+                "value": 540
+            },
+            {
+                "month": "Sep",
+                "year": 2000,
+                "value": 859
+            },
+            {
+                "month": "Oct",
+                "year": 2000,
+                "value": 864
+            },
+            {
+                "month": "Nov",
+                "year": 2000,
+                "value": 869
+            },
+            {
+                "month": "Dec",
+                "year": 2000,
+                "value": 1191
+            },
+            {
+                "month": "Jan",
+                "year": 2001,
+                "value": 602
+            },
+            {
+                "month": "Feb",
+                "year": 2001,
+                "value": 979
+            },
+            {
+                "month": "Mar",
+                "year": 2001,
+                "value": 900
+            },
+            {
+                "month": "Apr",
+                "year": 2001,
+                "value": 507
+            },
+            {
+                "month": "May",
+                "year": 2001,
+                "value": 972
+            },
+            {
+                "month": "Jun",
+                "year": 2001,
+                "value": 849
+            },
+            {
+                "month": "Jul",
+                "year": 2001,
+                "value": 465
+            },
+            {
+                "month": "Aug",
+                "year": 2001,
+                "value": 757
+            },
+            {
+                "month": "Sep",
+                "year": 2001,
+                "value": 574
+            },
+            {
+                "month": "Oct",
+                "year": 2001,
+                "value": 560
+            },
+            {
+                "month": "Nov",
+                "year": 2001,
+                "value": 708
+            },
+            {
+                "month": "Dec",
+                "year": 2001,
+                "value": 581
+            },
+            {
+                "month": "Jan",
+                "year": 2002,
+                "value": 900
+            },
+            {
+                "month": "Feb",
+                "year": 2002,
+                "value": 885
+            },
+            {
+                "month": "Mar",
+                "year": 2002,
+                "value": 982
+            },
+            {
+                "month": "Apr",
+                "year": 2002,
+                "value": 441
+            },
+            {
+                "month": "May",
+                "year": 2002,
+                "value": 715
+            },
+            {
+                "month": "Jun",
+                "year": 2002,
+                "value": 452
+            }
+        ]
+    }
+]
