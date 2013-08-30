@@ -100,58 +100,59 @@
             {
                 "month": "Aug",
                 "year": 2001,
-                "value": 1444
+                "value": 757
             },
             {
                 "month": "Sep",
                 "year": 2001,
-                "value": 1328
+                "value": 574
             },
             {
                 "month": "Oct",
                 "year": 2001,
-                "value": 1230
+                "value": 560
             },
             {
                 "month": "Nov",
                 "year": 2001,
-                "value": 1383
+                "value": 708
             },
             {
                 "month": "Dec",
                 "year": 2001,
-                "value": 1019
+                "value": 581
             },
             {
                 "month": "Jan",
                 "year": 2002,
-                "value": 1237
+                "value": 900
             },
             {
                 "month": "Feb",
                 "year": 2002,
-                "value": 1580
+                "value": 885
             },
             {
                 "month": "Mar",
                 "year": 2002,
-                "value": 1226
+                "value": 982
             },
             {
                 "month": "Apr",
                 "year": 2002,
-                "value": 1607
+                "value": 441
             },
             {
                 "month": "May",
                 "year": 2002,
-                "value": 1986
+                "value": 715
             },
             {
                 "month": "Jun",
                 "year": 2002,
-                "value": 1395
+                "value": 452
             }
+
         ]
     },
     {
@@ -255,58 +256,213 @@
             {
                 "month": "Aug",
                 "year": 2001,
-                "value": 757
+                "value": 1444
             },
             {
                 "month": "Sep",
                 "year": 2001,
-                "value": 574
+                "value": 1328
             },
             {
                 "month": "Oct",
                 "year": 2001,
-                "value": 560
+                "value": 1230
             },
             {
                 "month": "Nov",
                 "year": 2001,
-                "value": 708
+                "value": 1383
             },
             {
                 "month": "Dec",
                 "year": 2001,
-                "value": 581
+                "value": 1019
             },
             {
                 "month": "Jan",
                 "year": 2002,
-                "value": 900
+                "value": 1237
             },
             {
                 "month": "Feb",
                 "year": 2002,
-                "value": 885
+                "value": 1580
             },
             {
                 "month": "Mar",
                 "year": 2002,
-                "value": 982
+                "value": 1226
             },
             {
                 "month": "Apr",
                 "year": 2002,
-                "value": 441
+                "value": 1607
             },
             {
                 "month": "May",
                 "year": 2002,
-                "value": 715
+                "value": 1986
             },
             {
                 "month": "Jun",
                 "year": 2002,
-                "value": 452
+                "value": 1395
             }
+        ]
+    },
+    {
+        "name": "Graph 7",
+        "data": [
+        {
+            "month": "Jan",
+            "year": 2000,
+            "value": 222
+        },
+        {
+            "month": "Feb",
+            "year": 2000,
+            "value": 159
+        },
+        {
+            "month": "Mar",
+            "year": 2000,
+            "value": 161
+        },
+        {
+            "month": "Apr",
+            "year": 2000,
+            "value": 338
+        },
+        {
+            "month": "May",
+            "year": 2000,
+            "value": 187
+        },
+        {
+            "month": "Jun",
+            "year": 2000,
+            "value": 319
+        },
+        {
+            "month": "Jul",
+            "year": 2000,
+            "value": 288
+        },
+        {
+            "month": "Aug",
+            "year": 2000,
+            "value": 333
+        },
+        {
+            "month": "Sep",
+            "year": 2000,
+            "value": 144
+        },
+        {
+            "month": "Oct",
+            "year": 2000,
+            "value": 362
+        },
+        {
+            "month": "Nov",
+            "year": 2000,
+            "value": 100
+        },
+        {
+            "month": "Dec",
+            "year": 2000,
+            "value": 393
+        },
+        {
+            "month": "Jan",
+            "year": 2001,
+            "value": 160
+        },
+        {
+            "month": "Feb",
+            "year": 2001,
+            "value": 377
+        },
+        {
+            "month": "Mar",
+            "year": 2001,
+            "value": 140
+        },
+        {
+            "month": "Apr",
+            "year": 2001,
+            "value": 127
+        },
+        {
+            "month": "May",
+            "year": 2001,
+            "value": 171
+        },
+        {
+            "month": "Jun",
+            "year": 2001,
+            "value": 222
+        },
+        {
+            "month": "Jul",
+            "year": 2001,
+            "value": 255
+        },
+        {
+            "month": "Aug",
+            "year": 2001,
+            "value": 273
+        },
+        {
+            "month": "Sep",
+            "year": 2001,
+            "value": 286
+        },
+        {
+            "month": "Oct",
+            "year": 2001,
+            "value": 392
+        },
+        {
+            "month": "Nov",
+            "year": 2001,
+            "value": 292
+        },
+        {
+            "month": "Dec",
+            "year": 2001,
+            "value": 376
+        },
+        {
+            "month": "Jan",
+            "year": 2002,
+            "value": 181
+        },
+        {
+            "month": "Feb",
+            "year": 2002,
+            "value": 121
+        },
+        {
+            "month": "Mar",
+            "year": 2002,
+            "value": 263
+        },
+        {
+            "month": "Apr",
+            "year": 2002,
+            "value": 317
+        },
+        {
+            "month": "May",
+            "year": 2002,
+            "value": 380
+        },
+        {
+            "month": "Jun",
+            "year": 2002,
+            "value": 281
+        }
         ]
     }
 ]
